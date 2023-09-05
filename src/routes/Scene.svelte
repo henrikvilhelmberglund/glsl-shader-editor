@@ -11,15 +11,19 @@
 	import { HTML } from "@threlte/extras";
 	import Markup from "./Markup.svelte";
 	import { AmbientLight, Texture } from "three";
-	import { color } from "$lib/stores";
+	import { color, fragment, vertex } from "$lib/stores";
 	import { TextureLoader } from "three";
 	import { useLoader } from "@threlte/core";
 
 	const texture = useLoader(TextureLoader).load("/Henrik.png");
+
+	$: fragmentShader = $fragment;
 </script>
 
 <HTML>
-	<Markup />
+	<main class="flex translate-x-[-50%] flex-col items-center p-0 pt-20">
+		<textarea bind:value={$fragment} name="" id="" cols="100" rows="20" />
+	</main>
 </HTML>
 
 <T.PerspectiveCamera
@@ -47,3 +51,9 @@
 	<T.CircleGeometry args={[5, 40]} />
 	<T.MeshStandardMaterial color="white" />
 </T.Mesh>
+{#key fragmentShader}
+	<T.Mesh>
+		<T.PlaneGeometry args={[window.innerWidth, window.innerHeight, 40]} />
+		<T.ShaderMaterial {fragmentShader} />
+	</T.Mesh>
+{/key}
